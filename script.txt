@@ -1,0 +1,69 @@
+✅ 1. What the Script Does
+This script collects important system health information from your Windows computer and saves it into a file named diagnostics.log.
+
+It checks:
+
+🧠 CPU usage
+
+💾 Memory usage (RAM)
+
+💽 Disk storage space
+
+📋 Running processes
+
+📅 Date and time of the system check
+
+The goal is to simulate a real-world troubleshooting report.
+
+2.We will set the powershell to run as the adminstrator
+    and run command like changing the directory to where the file is present and then run file using .\filename
+
+🔍 3. What Each Part of the Script Checks
+🕒 Line 1: Add Date & Time
+powershell
+    "System Check - $(Get-Date)" | Out-File diagnostics.log
+
+📅 Adds a timestamp to know when the script was run.
+
+🧠 Line 2–4: CPU Usage
+powershell
+        "CPU Usage:" | Out-File -Append diagnostics.log
+
+Get-CimInstance Win32_Processor | Select-Object LoadPercentage | Out-File -Append diagnostics.log
+📊 Shows how much of your CPU (processor) is being used right now (in %).
+
+💾 Line 5–7: Memory Usage (RAM)
+powershell
+    "Memory Usage:" | Out-File -Append diagnostics.log
+Get-CimInstance Win32_OperatingSystem | Select-Object FreePhysicalMemory,TotalVisibleMemorySize | Out-File -Append diagnostics.log
+
+🔍 Shows:
+
+Total RAM
+Free (unused) RAM
+You can use this to check if your system is low on memory.
+
+💽 Line 8–10: Disk Usage
+powershell
+
+"Disk Usage:" | Out-File -Append diagnostics.log
+Get-PSDrive -PSProvider 'FileSystem' | Out-File -Append diagnostics.log
+
+📂 Displays used and free space on all drives (like C:, D:)
+Helps check if the disk is full or almost full.
+
+📋 Line 11–13: Top 10 Processes by Memory
+powershell
+"Top 10 Processes by Memory Usage:" | Out-File -Append diagnostics.log
+Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 10 | Out-File -Append diagnostics.log
+
+🧠 Lists the top 10 programs currently using the most memory.
+Useful for spotting heavy apps that slow your PC down.
+
+
+    Check	                    What It Does
+1.  Timestamp	                Shows when the script was run
+2.  CPU Usage	                Shows current CPU load (%)
+3.  Memory	                    Shows used and free RAM
+4.  Disk	                    Shows free and used storage
+5.  Processes	                Shows top memory-hungry apps
